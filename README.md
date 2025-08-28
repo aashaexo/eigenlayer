@@ -2,6 +2,8 @@
 
 A pixel-art themed petition web application for the EigenLayer CT Intern position, integrated with Supabase for real-time data storage and management.
 
+
+
 ## Features
 
 - 🎨 Retro pixel-art design with animations
@@ -10,7 +12,7 @@ A pixel-art themed petition web application for the EigenLayer CT Intern positio
 - 🚫 Duplicate signature prevention
 - 📱 Mobile-responsive design
 - ⚡ Supabase real-time subscriptions
-- 🛡️ Built-in database constraints and security
+- 🛡️ Built-in database constraints & security
 
 ## Database Features
 
