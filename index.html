@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petition: Make Me CT Intern at EigenLayer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #c4a5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #4c1d95;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Pixel cloud images */
+        .pixel-cloud {
+            position: absolute;
+            z-index: -1;
+            image-rendering: pixelated;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .pixel-cloud img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .pixel-cloud-1 {
+            top: 8%;
+            left: 3%;
+            width: 250px;
+            height: auto;
+            animation-delay: 0s;
+        }
+
+        .pixel-cloud-2 {
+            top: 15%;
+            right: 5%;
+            width: 200px;
+            height: auto;
+            animation-delay: -3s;
+        }
+
+        .pixel-cloud-3 {
+            bottom: 25%;
+            left: 8%;
+            width: 180px;
+            height: auto;
+            animation-delay: -6s;
+        }
+
+        .pixel-cloud-5 {
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: auto;
+            animation-delay: -12s;
+        }
+
+        /* Pixel buildings */
+        .pixel-buildings {
+            position: absolute;
+            bottom: -50px;
+            right: 20px;
+            width: 300px;
+            height: auto;
+            z-index: -1;
+            image-rendering: pixelated;
+        }
+
+        .pixel-buildings img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        /* Sparkle stars */
+        .sparkle {
+            position: absolute;
+            color: #fbbf24;
+            font-size: 24px;
+            animation: sparkle 3s ease-in-out infinite;
+            z-index: -1;
+            text-shadow: 0 0 10px #fbbf24;
+        }
+
+        .sparkle-1 {
+            top: 25%;
+            left: 25%;
+            animation-delay: 0s;
+        }
+
+        .sparkle-2 {
+            top: 60%;
+            right: 20%;
+            animation-delay: -1s;
+        }
+
+        .sparkle-3 {
+            bottom: 40%;
+            right: 35%;
+            animation-delay: -2s;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .main-title {
+            font-size: clamp(12px, 4vw, 24px);
+            line-height: 1.4;
+            margin-bottom: 15px;
+            color: #4c1d95;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.3);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: clamp(8px, 2vw, 12px);
+            opacity: 0.9;
+            line-height: 1.5;
+            color: #4c1d95;
+        }
+
+        .counter {
+            font-size: clamp(14px, 3vw, 20px);
+            margin-bottom: 20px;
+            color: #fbbf24;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+        }
+
+        .counter.animate {
+            animation: bounce 0.5s ease;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.3);
+            border: 3px solid white;
+            margin-bottom: 30px;
+            position: relative;
+            image-rendering: pixelated;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.1) 50%, transparent 50%, transparent 75%, rgba(255,255,255,0.1) 75%);
+            background-size: 8px 8px;
+        }
+
+        .form-container {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 
+                0 0 0 4px rgba(0,0,0,0.2),
+                0 8px 32px rgba(0,0,0,0.3);
+            color: #1f2937;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 10px;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #6b7280;
+            border-radius: 8px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 80px;
+        }
+
+        .button {
+            background: #d8b4fe;
+            color: #4c1d95;
+            border: 4px solid #4c1d95;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 6px 0 #4c1d95,
+                0 10px 20px rgba(0,0,0,0.2);
+            margin: 10px;
+            position: relative;
+            image-rendering: pixelated;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            background: #c4a5f5;
+            box-shadow: 
+                0 8px 0 #4c1d95,
+                0 14px 25px rgba(0,0,0,0.3);
+        }
+
+        .button:active {
+            transform: translateY(3px);
+            box-shadow: 
+                0 3px 0 #4c1d95,
+                0 6px 10px rgba(0,0,0,0.2);
+        }
+
+        .button.secondary {
+            background: #fbbf24;
+            color: #4c1d95;
+            border: 4px solid #4c1d95;
+            box-shadow: 
+                0 6px 0 #4c1d95,
+                0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .button.secondary:hover {
+            background: #f59e0b;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 0 #4c1d95,
+                0 14px 25px rgba(0,0,0,0.3);
+        }
+
+        .button.secondary:active {
+            transform: translateY(3px);
+            box-shadow: 
+                0 3px 0 #4c1d95,
+                0 6px 10px rgba(0,0,0,0.2);
+        }
+
+        .signatures {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .signatures h3 {
+            font-size: 12px;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+
+        .signature-item {
+            font-size: 8px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            border-left: 3px solid #ec4899;
+        }
+
+        .backstory-link {
+            color: #4c1d95;
+            text-decoration: underline;
+            font-size: 10px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        .backstory-link:hover {
+            opacity: 1;
+            color: #6b46c1;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .header-backstory {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 8px;
+            margin-top: 5px;
+        }
+
+        .success {
+            color: #10b981;
+            font-size: 8px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .button {
+                padding: 12px 20px;
+                font-size: 10px;
+            }
+        }
+
+        /* Logo styling */
+        .eigen-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            z-index: 100;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            transition: transform 0.3s ease;
+            image-rendering: pixelated;
+        }
+
+        .eigen-logo:hover {
+            transform: scale(1.1);
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .eigen-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .eigen-logo {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .pixel-cloud-1 { width: 180px; }
+            .pixel-cloud-2 { width: 150px; }
+            .pixel-cloud-3 { width: 130px; }
+            .pixel-cloud-5 { width: 100px; }
+            
+            .pixel-buildings { width: 200px; }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 14px;
+            }
+            
+            .subtitle {
+                font-size: 8px;
+            }
+            
+            .form-container {
+                padding: 15px;
+            }
+            
+            .eigen-logo {
+                width: 40px;
+                height: 40px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .pixel-cloud-1 { width: 120px; }
+            .pixel-cloud-2 { width: 100px; }
+            .pixel-cloud-3 { width: 90px; }
+            .pixel-cloud-5 { width: 70px; }
+            
+            .pixel-buildings { width: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- EigenLayer Logo -->
+    <div class="eigen-logo">
+        <img src="eigenlogo.jpg" alt="EigenLayer Logo">
+    </div>
+    
+    <!-- Pixel cloud images -->
+    <div class="pixel-cloud pixel-cloud-1">
+        <img src="cloud5.jpg" alt="Pixel Cloud 1">
+    </div>
+    <div class="pixel-cloud pixel-cloud-2">
+        <img src="cloud7 (1).jpg" alt="Pixel Cloud 2">
+    </div>
+    <div class="pixel-cloud pixel-cloud-3">
+        <img src="cloud6.jpg" alt="Pixel Cloud 3">
+    </div>
+    <div class="pixel-cloud pixel-cloud-5">
+        <img src="cloud3.jpg" alt="Pixel Cloud 5">
+    </div>
+    
+    <!-- Pixel buildings -->
+    <div class="pixel-buildings">
+        <img src="buildingss.jpg" alt="Pixel Art Buildings">
+    </div>
+    
+    <!-- Sparkle stars -->
+    <div class="sparkle sparkle-1">✨</div>
+    <div class="sparkle sparkle-2">✨</div>
+    <div class="sparkle sparkle-3">✨</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">PETITION TO MAKE ME THE CT INTERN AT EIGENLAYER</h1>
+            <a href="#" class="backstory-link header-backstory" id="backstoryLink">read the back story</a>
+        </div>
+
+        <div class="counter" id="counter">🔥 0/1000 signed</div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="form-container">
+            <form id="petitionForm">
+                <div class="form-group">
+                    <label for="handle">X/TWITTER HANDLE *</label>
+                    <input type="text" id="handle" name="handle" required placeholder="yourhandle (@ will be added)">
+                    <div id="handleError" class="error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">MESSAGE (OPTIONAL)</label>
+                    <textarea id="message" name="message" placeholder="Share your thoughts..."></textarea>
+                </div>
+
+                <button type="submit" class="button">BLESS THE INTERN</button>
+                <div id="formMessage"></div>
+            </form>
+        </div>
+
+        <div class="signatures" id="signaturesContainer">
+            <h3>RECENT SIGNATURES</h3>
+            <div id="signaturesList">
+                <div class="signature-item">No signatures yet. Be the first!</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <button class="button secondary" id="shareButton">SHARE ON X</button>
+        </div>
+
+
+    </div>
+
+    <script>
+        class PetitionManager {
+            constructor() {
+                this.signatures = this.loadSignatures();
+                this.initializeEventListeners();
+                this.updateDisplay();
+            }
+
+            loadSignatures() {
+                const saved = localStorage.getItem('petitionSignatures');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveSignatures() {
+                localStorage.setItem('petitionSignatures', JSON.stringify(this.signatures));
+            }
+
+            initializeEventListeners() {
+                document.getElementById('petitionForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSubmit();
+                });
+
+                document.getElementById('shareButton').addEventListener('click', () => {
+                    this.shareOnTwitter();
+                });
+
+                document.getElementById('backstoryLink').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Add loading animation to the link
+                    const link = e.target;
+                    const originalText = link.textContent;
+                    link.textContent = 'loading...';
+                    link.style.opacity = '0.6';
+                    
+                    // Create new window with smooth transition
+                    setTimeout(() => {
+                        const newWindow = window.open('', '_blank');
+                        newWindow.document.write(`
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head>
+                                <meta charset="UTF-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <title>The Back Story</title>
+                                <style>
+                                    body {
+                                        background: white;
+                                        margin: 0;
+                                        padding: 0;
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        min-height: 100vh;
+                                        opacity: 0;
+                                        transition: opacity 0.8s ease-in-out;
+                                    }
+                                    body.loaded {
+                                        opacity: 1;
+                                    }
+                                    img {
+                                        max-width: 100%;
+                                        max-height: 100vh;
+                                        object-fit: contain;
+                                        transform: scale(0.9);
+                                        transition: transform 0.6s ease-out;
+                                    }
+                                    img.loaded {
+                                        transform: scale(1);
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <img src="taylort.jpg" alt="The Back Story" onload="this.classList.add('loaded'); document.body.classList.add('loaded');">
+                            </body>
+                            </html>
+                        `);
+                        newWindow.document.close();
+                        
+                        // Reset link text
+                        link.textContent = originalText;
+                        link.style.opacity = '1';
+                    }, 500);
+                });
+
+                // Real-time validation
+                document.getElementById('handle').addEventListener('input', (e) => {
+                    this.validateHandle(e.target.value);
+                });
+            }
+
+            validateHandle(handle) {
+                const cleanHandle = this.cleanHandle(handle);
+                const exists = this.signatures.some(sig => sig.handle.toLowerCase() === cleanHandle.toLowerCase());
+                
+                const errorDiv = document.getElementById('handleError');
+                if (exists) {
+                    errorDiv.textContent = 'This handle has already signed!';
+                    return false;
+                } else {
+                    errorDiv.textContent = '';
+                    return true;
+                }
+            }
+
+            cleanHandle(handle) {
+                // Remove @ if present, then add it back
+                let cleaned = handle.trim().replace(/^@/, '');
+                return `@${cleaned}`;
+            }
+
+            handleSubmit() {
+                const form = document.getElementById('petitionForm');
+                const formData = new FormData(form);
+                
+                const rawHandle = formData.get('handle').trim();
+                const message = formData.get('message').trim();
+
+                // Clear previous errors
+                document.getElementById('handleError').textContent = '';
+                document.getElementById('formMessage').textContent = '';
+
+                // Validate
+                if (!rawHandle) {
+                    document.getElementById('handleError').textContent = 'Handle is required';
+                    return;
+                }
+
+                const handle = this.cleanHandle(rawHandle);
+
+                // Check for duplicates
+                if (!this.validateHandle(rawHandle)) {
+                    return;
+                }
+
+                // Add signature
+                const signature = {
+                    handle,
+                    message: message || '',
+                    timestamp: Date.now()
+                };
+
+                this.signatures.unshift(signature); // Add to beginning
+                this.saveSignatures();
+                
+                // Show success
+                const messageDiv = document.getElementById('formMessage');
+                messageDiv.innerHTML = '<div class="success">Thanks for signing! 🎉</div>';
+                
+                // Reset form
+                form.reset();
+                
+                // Update display with animation
+                this.updateDisplay();
+                this.animateCounter();
+
+                // Clear success message after 3 seconds
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                }, 3000);
+            }
+
+            updateDisplay() {
+                this.updateCounter();
+                this.updateProgressBar();
+                this.updateSignaturesList();
+            }
+
+            updateCounter() {
+                const counter = document.getElementById('counter');
+                counter.textContent = `🔥 ${this.signatures.length}/1000 signed`;
+            }
+
+            animateCounter() {
+                const counter = document.getElementById('counter');
+                counter.classList.add('animate');
+                setTimeout(() => {
+                    counter.classList.remove('animate');
+                }, 500);
+            }
+
+            updateProgressBar() {
+                const progressBar = document.getElementById('progressBar');
+                const percentage = Math.min((this.signatures.length / 1000) * 100, 100);
+                progressBar.style.width = `${percentage}%`;
+            }
+
+            updateSignaturesList() {
+                const container = document.getElementById('signaturesList');
+                
+                if (this.signatures.length === 0) {
+                    container.innerHTML = '<div class="signature-item">No signatures yet. Be the first!</div>';
+                    return;
+                }
+
+                const recent = this.signatures.slice(0, 5);
+                container.innerHTML = recent.map(sig => {
+                    const timeAgo = this.getTimeAgo(sig.timestamp);
+                    const messageText = sig.message ? ` — "${sig.message}"` : '';
+                    return `<div class="signature-item">${sig.handle} signed ${timeAgo}${messageText}</div>`;
+                }).join('');
+            }
+
+            getTimeAgo(timestamp) {
+                const now = Date.now();
+                const diff = now - timestamp;
+                const seconds = Math.floor(diff / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+
+                if (days > 0) return `${days}d ago`;
+                if (hours > 0) return `${hours}h ago`;
+                if (minutes > 0) return `${minutes}m ago`;
+                return 'just now';
+            }
+
+            shareOnTwitter() {
+                const url = encodeURIComponent(window.location.href);
+                const text = encodeURIComponent(
+                    "I just signed the petition to make @aasha the official CT Intern at @eigenlayer. Sign here:"
+                );
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+                window.open(twitterUrl, '_blank', 'width=600,height=400');
+            }
+
+
+        }
+
+        // Initialize the petition manager when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new PetitionManager();
+        });
+    </script>
+</body>
+</html>
