@@ -543,21 +543,94 @@
 
     </div>
 
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <script src="config.js"></script>
+    
     <script>
+        // init supabase client
+        let supabase;
+        
+        // local config
+        if (window.SUPABASE_CONFIG) {
+            supabase = window.supabase.createClient(
+                window.SUPABASE_CONFIG.url, 
+                window.SUPABASE_CONFIG.anonKey
+            );
+        }
+
         class PetitionManager {
             constructor() {
-                this.signatures = this.loadSignatures();
+                this.signatures = [];
+                this.signatureCount = 0;
                 this.initializeEventListeners();
-                this.updateDisplay();
+                this.loadSignatures();
+                this.setupRealTimeSubscription();
             }
 
-            loadSignatures() {
-                const saved = localStorage.getItem('petitionSignatures');
-                return saved ? JSON.parse(saved) : [];
+            async loadSignatures() {
+                try {
+                    // load signature count
+                    const countResult = await this.getSignatureCount();
+                    this.signatureCount = countResult.count;
+
+                    // load recent signatures
+                    const signaturesResult = await this.getRecentSignatures();
+                    this.signatures = signaturesResult.signatures;
+
+                    this.updateDisplay();
+                } catch (error) {
+                    console.error('Error loading signatures:', error);
+                    this.showError('Failed to load signatures. Please refresh the page.');
+                }
             }
 
-            saveSignatures() {
-                localStorage.setItem('petitionSignatures', JSON.stringify(this.signatures));
+            async getSignatureCount() {
+                try {
+                    const { data, error } = await supabase.rpc('get_signature_count');
+                    
+                    if (error) throw error;
+                    
+                    return { count: data || 0 };
+                } catch (error) {
+                    console.error('Error getting signature count:', error);
+                    return { count: 0 };
+                }
+            }
+
+            async getRecentSignatures() {
+                try {
+                    const { data, error } = await supabase
+                        .from('petition_signatures')
+                        .select('*')
+                        .order('timestamp', { ascending: false })
+                        .limit(5);
+                    
+                    if (error) throw error;
+                    
+                    return { signatures: data || [] };
+                } catch (error) {
+                    console.error('Error getting recent signatures:', error);
+                    return { signatures: [] };
+                }
+            }
+
+            setupRealTimeSubscription() {
+                // subscribe to real-time updates
+                supabase
+                    .channel('petition_signatures')
+                    .on('postgres_changes', 
+                        { 
+                            event: 'INSERT', 
+                            schema: 'public', 
+                            table: 'petition_signatures' 
+                        }, 
+                        (payload) => {
+                            // refresh data when new signature is added
+                            this.loadSignatures();
+                        }
+                    )
+                    .subscribe();
             }
 
             initializeEventListeners() {
@@ -573,13 +646,11 @@
                 document.getElementById('backstoryLink').addEventListener('click', (e) => {
                     e.preventDefault();
                     
-                    // Add loading animation to the link
                     const link = e.target;
                     const originalText = link.textContent;
                     link.textContent = 'loading...';
                     link.style.opacity = '0.6';
                     
-                    // Create new window with smooth transition
                     setTimeout(() => {
                         const newWindow = window.open('', '_blank');
                         newWindow.document.write(`
@@ -623,50 +694,29 @@
                         `);
                         newWindow.document.close();
                         
-                        // Reset link text
                         link.textContent = originalText;
                         link.style.opacity = '1';
                     }, 500);
                 });
 
-                // Real-time validation
-                document.getElementById('handle').addEventListener('input', (e) => {
-                    this.validateHandle(e.target.value);
-                });
             }
 
-            validateHandle(handle) {
-                const cleanHandle = this.cleanHandle(handle);
-                const exists = this.signatures.some(sig => sig.handle.toLowerCase() === cleanHandle.toLowerCase());
-                
-                const errorDiv = document.getElementById('handleError');
-                if (exists) {
-                    errorDiv.textContent = 'This handle has already signed!';
-                    return false;
-                } else {
-                    errorDiv.textContent = '';
-                    return true;
-                }
-            }
 
             cleanHandle(handle) {
-                // Remove @ if present, then add it back
                 let cleaned = handle.trim().replace(/^@/, '');
                 return `@${cleaned}`;
             }
 
-            handleSubmit() {
+            async handleSubmit() {
                 const form = document.getElementById('petitionForm');
                 const formData = new FormData(form);
                 
                 const rawHandle = formData.get('handle').trim();
                 const message = formData.get('message').trim();
 
-                // Clear previous errors
                 document.getElementById('handleError').textContent = '';
                 document.getElementById('formMessage').textContent = '';
 
-                // Validate
                 if (!rawHandle) {
                     document.getElementById('handleError').textContent = 'Handle is required';
                     return;
@@ -674,36 +724,74 @@
 
                 const handle = this.cleanHandle(rawHandle);
 
-                // Check for duplicates
-                if (!this.validateHandle(rawHandle)) {
-                    return;
+                // show loading state
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'SIGNING...';
+                submitButton.disabled = true;
+
+                try {
+                    // add signature using the database function
+                    const { data, error } = await supabase.rpc('add_signature', {
+                        p_handle: handle,
+                        p_message: message || ''
+                    });
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    if (data && data.success) {
+                        const messageDiv = document.getElementById('formMessage');
+                        messageDiv.innerHTML = '<div class="success">Thanks for signing! 🎉</div>';
+                        
+                        // reset form
+                        form.reset();
+                        
+                        this.signatureCount = data.total_signatures;
+                        this.updateDisplay();
+                        this.animateCounter();
+
+                        setTimeout(() => {
+                            messageDiv.textContent = '';
+                        }, 3000);
+
+                        setTimeout(() => {
+                            this.loadSignatures();
+                        }, 500);
+                        
+                    } else {
+                        throw new Error(data?.error || 'Failed to add signature');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error adding signature:', error);
+                    
+                    // show e message
+                    const messageDiv = document.getElementById('formMessage');
+                    const handleErrorDiv = document.getElementById('handleError');
+                    let errorMessage = 'Failed to add signature. Please try again.';
+                    
+                    if (error.message.includes('Maximum signature limit') || error.message.includes('1000 has been reached')) {
+                        errorMessage = 'Sorry! The petition has reached its maximum of 1000 signatures.';
+                        messageDiv.innerHTML = `<div class="error">${errorMessage}</div>`;
+                    } else if (error.message.includes('already signed') || error.message.includes('duplicate key') || error.message.includes('Handle')) {
+                        errorMessage = 'This handle has already signed the petition!';
+                        handleErrorDiv.textContent = errorMessage;
+                    } else {
+                        messageDiv.innerHTML = `<div class="error">${errorMessage}</div>`;
+                    }
+                
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                        handleErrorDiv.textContent = '';
+                    }, 4000);
+                    
+                } finally {
+                    // reset button state
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
                 }
-
-                // Add signature
-                const signature = {
-                    handle,
-                    message: message || '',
-                    timestamp: Date.now()
-                };
-
-                this.signatures.unshift(signature); // Add to beginning
-                this.saveSignatures();
-                
-                // Show success
-                const messageDiv = document.getElementById('formMessage');
-                messageDiv.innerHTML = '<div class="success">Thanks for signing! 🎉</div>';
-                
-                // Reset form
-                form.reset();
-                
-                // Update display with animation
-                this.updateDisplay();
-                this.animateCounter();
-
-                // Clear success message after 3 seconds
-                setTimeout(() => {
-                    messageDiv.textContent = '';
-                }, 3000);
             }
 
             updateDisplay() {
@@ -714,7 +802,7 @@
 
             updateCounter() {
                 const counter = document.getElementById('counter');
-                counter.textContent = `🔥 ${this.signatures.length}/1000 signed`;
+                counter.textContent = `🔥 ${this.signatureCount}/1000 signed`;
             }
 
             animateCounter() {
@@ -727,7 +815,7 @@
 
             updateProgressBar() {
                 const progressBar = document.getElementById('progressBar');
-                const percentage = Math.min((this.signatures.length / 1000) * 100, 100);
+                const percentage = Math.min((this.signatureCount / 1000) * 100, 100);
                 progressBar.style.width = `${percentage}%`;
             }
 
@@ -739,8 +827,7 @@
                     return;
                 }
 
-                const recent = this.signatures.slice(0, 5);
-                container.innerHTML = recent.map(sig => {
+                container.innerHTML = this.signatures.map(sig => {
                     const timeAgo = this.getTimeAgo(sig.timestamp);
                     const messageText = sig.message ? ` — "${sig.message}"` : '';
                     return `<div class="signature-item">${sig.handle} signed ${timeAgo}${messageText}</div>`;
@@ -748,8 +835,9 @@
             }
 
             getTimeAgo(timestamp) {
-                const now = Date.now();
-                const diff = now - timestamp;
+                const signatureTime = typeof timestamp === 'string' ? new Date(timestamp) : new Date(timestamp);
+                const now = new Date();
+                const diff = now - signatureTime;
                 const seconds = Math.floor(diff / 1000);
                 const minutes = Math.floor(seconds / 60);
                 const hours = Math.floor(minutes / 60);
@@ -759,6 +847,15 @@
                 if (hours > 0) return `${hours}h ago`;
                 if (minutes > 0) return `${minutes}m ago`;
                 return 'just now';
+            }
+
+            showError(message) {
+                const messageDiv = document.getElementById('formMessage');
+                messageDiv.innerHTML = `<div class="error">${message}</div>`;
+                
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                }, 4000);
             }
 
             shareOnTwitter() {
@@ -773,7 +870,7 @@
 
         }
 
-        // Initialize the petition manager when the page loads
+        // init petition manager when page loads
         document.addEventListener('DOMContentLoaded', () => {
             new PetitionManager();
         });
