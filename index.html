@@ -598,13 +598,13 @@
                 }
             }
 
-            async getRecentSignatures() {
-                try {
-                    const { data, error } = await supabase
-                        .from('petition_signatures')
-                        .select('*')
-                        .order('timestamp', { ascending: false })
-                        .limit(5);
+                         async getRecentSignatures() {
+                 try {
+                     const { data, error } = await supabase
+                         .from('petition_signatures')
+                         .select('*')
+                         .order('timestamp', { ascending: false })
+                         .limit(2);
                     
                     if (error) throw error;
                     
